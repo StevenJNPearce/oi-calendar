@@ -15,11 +15,12 @@ class EventCalendar extends Component {
       "handleAddEvent",
       "handleEditEvent",
       "handleViewAllCalendars",
-      "handleAddCalendarByUrl"
+      "handleAddCalendarByFile"
     ].reduce((acc, d) => {
       acc[d] = this[d].bind(this);
       return acc;
     }, {});
+    this.fileInput = React.createRef();
   }
 
   componentWillMount() {
@@ -57,11 +58,22 @@ class EventCalendar extends Component {
     });
   }
 
+/*
   handleAddCalendarByUrl(event) {
     if (event.key === "Enter") {
       const { showSettingsAddCalendar } = this.props;
       showSettingsAddCalendar(event.target.value);
     }
+  }
+*/
+
+  handleAddCalendarByFile(event) {
+    event.preventDefault();
+    alert(
+      `Selected file - ${
+        this.fileInput.current.files[0].name
+      }`
+    );
   }
 
   eventStyle(event, start, end, isSelected) {
@@ -106,7 +118,7 @@ class EventCalendar extends Component {
       handleEditEvent,
       handleAddEvent,
       handleViewAllCalendars,
-      handleAddCalendarByUrl
+      handleAddCalendarByFile
     } = this.bound;
 
     let events = Object.values(this.props.events.allEvents);
@@ -186,12 +198,16 @@ class EventCalendar extends Component {
                       </a>
                       .
                       <br />
-                      <input
-                        style={{ width: "100%" }}
-                        type="text"
-                        placeholder="Paste url like https://calendar.google..../basic.ics"
-                        onKeyPress={handleAddCalendarByUrl}
-                      />
+
+                      <form onSubmit={this.handleAddCalendarByFile}>
+                        <label>
+                          Upload .ics calendar file:
+                          <input type="file" ref={this.fileInput} />
+                        </label>
+                        <br />
+                        <button type="submit">Submit</button>
+                      </form>
+
                     </Col>
                   </Row>
                 </Grid>
